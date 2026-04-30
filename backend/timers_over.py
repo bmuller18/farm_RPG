@@ -1,14 +1,15 @@
 from datetime import datetime, timedelta
 import time
 
-start_time = datetime.now()
-temporizador = 15
+start_action = datetime.now().second
+
+def corn_harvest(corn_time):
+    time_now = datetime.now()
+
+    if time_now - start_action >= timedelta(seconds=corn_harvest):
+        print("Corn waws harveted")
 
 while True:
-    now_time = datetime.now()
-
-    if now_time - start_time >= timedelta(seconds=temporizador):
-        print("Pasaron 15 segundos:")
+    if corn_harvest(5):
         break
-
     time.sleep(1)
