@@ -11,7 +11,7 @@ class Crop:
     def plant(self):
         if self.planted_at is None:
             self.planted_at = datetime.now()
-            print(f"{self.name} plantadp")
+            print(f"{self.name} plantado")
     
     def is_ready(self):
         if self.planted_at is None:
