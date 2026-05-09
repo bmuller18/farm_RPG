@@ -1,35 +1,35 @@
-from datetime import datetime, timedelta
+"""Cultivos: usan TimedAction para el crecimiento (misma pieza que cocina/fundición)."""
+
+from ..timed_action import TimedAction
+
 
 class Crop:
-    def __init__(self, name, growt_seconds, reward):
+    def __init__(self, name, grow_seconds, reward):
         self.name = name
-        self.growth_time = timedelta(seconds=growt_seconds)
         self.reward = reward
+        self._growth = TimedAction(duration_seconds=float(grow_seconds))
 
-        self.planted_at = None
-    
+    @property
+    def is_idle(self):
+        return self._growth.is_idle
+
+    @property
+    def is_growing(self):
+        return self._growth.is_active()
+
     def plant(self):
-        if self.planted_at is None:
-            self.planted_at = datetime.now()
+        if self._growth.start():
             print(f"{self.name} plantado")
-    
-    def is_ready(self):
-        if self.planted_at is None:
-            return False
 
-        return datetime.now() - self.planted_at >= self.growth_time
-    
+    def is_ready(self):
+        return self._growth.is_ready()
+
     def harvest(self):
-        if self.is_ready():
-            self.planted_at = None
+        if self._growth.finish_if_ready():
             print(f"Recolectaste {self.reward}")
             return self.reward
-        else:
-            print("Todavia no esta listo")
-            return None
+        print("Todavia no esta listo")
+        return None
 
     def time_remaining(self):
-        if self.planted_at is None:
-            return 0
-        remaining = self.growth_time - (datetime.now() - self.planted_at)
-        return max(0, remaining.total_seconds())
+        return self._growth.time_remaining_seconds()
