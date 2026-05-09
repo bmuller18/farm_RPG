@@ -1,0 +1,12 @@
+Parcela: vacía / plantada, qué semilla, planted_at, duración en segundos.
+Jugador: oro (número), inventario (dict item_id → cantidad).
+Cultivo (definición): nombre, grow_seconds, recompensa (qué item y cuánto, o solo oro).
+
+
+Crea algo equivalente a:
+CropDefinition (datos fijos: nombre, duración, recompensa).
+Plot (estado en una parcela: si está plantada, referencia a definición, timestamp de plantado).
+Reglas claras:
+No plantar si ya hay cultivo.
+Cosechar solo si now - planted_at >= duration.
+Al cosechar: vaciar parcela, sumar recompensa al inventario/oro.
