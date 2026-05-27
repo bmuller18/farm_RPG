@@ -1,6 +1,10 @@
 """Cultivos: usan TimedAction para el crecimiento (misma pieza que cocina/fundición)."""
 
-from ..timed_action import TimedAction
+try:
+    from backend.timed_action import TimedAction
+except ImportError:
+    # Desde `backend/` (ej. python app.py): no hay paquete `backend` en sys.path
+    from timed_action import TimedAction
 
 
 class Crop:
@@ -33,3 +37,7 @@ class Crop:
 
     def time_remaining(self):
         return self._growth.time_remaining_seconds()
+
+
+# Instancia compartida (UI Flet / futura API Flask)
+wheat = Crop("Trigo", 5, 10)

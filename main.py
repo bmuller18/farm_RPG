@@ -1,12 +1,9 @@
 import flet as ft
 import time
 
-from backend.cropsystem.crops import Crop
+from backend.cropsystem.crops import wheat
 from backend.timed_action import TimedAction
 
-wheat = Crop("Trigo", 5, 10)
-
-# Ejemplo de otro sistema reutilizando el mismo temporizador (cocina, fundición, etc.)
 cooking = TimedAction(duration_seconds=8.0)
 
 
@@ -25,7 +22,7 @@ def main(page: ft.Page):
         else:
             estado_text.value = "Estado: Creciendo"
         if wheat.is_growing:
-            timer_text.value = f"Trigo — restante: {wheat.time_remaining():.1f}s"
+            timer_text.value = f"Trigo — restante: {int(wheat.time_remaining())} s"
         elif wheat.is_ready():
             timer_text.value = "Trigo — listo para cosechar"
         else:
@@ -35,11 +32,13 @@ def main(page: ft.Page):
         elif cooking.is_ready():
             cooking_text.value = "Cocina (ejemplo): listo — Completar"
         else:
-            cooking_text.value = f"Cocina (ejemplo): {cooking.time_remaining_seconds():.1f}s restantes"
+            cooking_text.value = f"Cocina (ejemplo): {int(cooking.time_remaining_seconds())} s restantes"
 
     def update_ui():
+        segundos = 0
         while True:
-            texto_pantalla.value = str(int(time.time()) % 1000)
+            segundos += 1
+            texto_pantalla.value = str(segundos)
             refresh_labels()
             page.update()
             time.sleep(1)
@@ -90,4 +89,4 @@ def main(page: ft.Page):
     page.run_thread(update_ui)
 
 
-ft.app(target=main)
+ft.app(target=main, view=ft.AppView.WEB_BROWSER)

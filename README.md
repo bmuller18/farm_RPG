@@ -48,7 +48,7 @@ Construir una experiencia **single-player** y **local** donde el jugador progres
 |-----------|-------------|
 | **Python 3** | Lenguaje del proyecto |
 | **[Flet](https://flet.dev/)** | Interfaz; punto de entrada `main.py`. |
-| **Flask** | Esqueleto en `backend/app.py` pensado como API/backend; sin rutas funcionales definidas en el estado actual del repo. |
+| **Flask** | API opcional en `backend/app.py` (ej.: `GET /`). Ejecutar con `cd backend` y `python app.py`. |
 
 ---
 
@@ -58,14 +58,16 @@ Construir una experiencia **single-player** y **local** donde el jugador progres
 Flask + Flet/
 ├── README.md                 # Este archivo
 ├── Ideas                     # Notas del autor
-├── main.py                   # Aplicación Flet (UI de demostración)
+├── main.py                   # Aplicación Flet (TimedAction + reloj de demo en UI)
 └── backend/
     ├── __init__.py
-    ├── app.py                # Flask (preparación futura / API)
+    ├── app.py                # Flask (API de ejemplo)
     ├── timed_action.py       # Temporizador reutilizable
+    ├── tests/
+    │   └── tests_app.py      # Test del endpoint `/`
     └── cropsystem/
         ├── __init__.py
-        └── crops.py          # Lógica de cultivo
+        └── crops.py          # Cultivo (usa TimedAction); exporta `wheat`
 ```
 
 ---
@@ -139,22 +141,13 @@ Constructor: `Crop(nombre, grow_seconds, reward)`.
 
 ### `main.py`
 
-Construye la página Flet actual:
+- Cultivo (`wheat`, importado de `cropsystem.crops`), cocina demostrativa con `TimedAction` y botones Plantar/Cosechar y Cocinar/Servir.
+- Un texto “Reloj UI” muestra un contador trivial (`time.time()`); solo es decorativo, no define reglas del juego.
+- Un hilo con `sleep(1)` refresca los textos; el tiempo de juego real sigue viniendo de `TimedAction`.
 
-- Un cultivo de trigo (`Crop("Trigo", 5, 10)`): botones Plantar / Cosechar y textos de estado.
-- Una demostración de **cocina** con un `TimedAction` de 8 s separado para mostrar reutilización del temporizador.
-- Un hilo que cada segundo actualiza textos mediante `refresh_labels()` y `page.update()`.
+### `backend/app.py`
 
-La luego en el proyecto cabe extraer esa UI a carpetas tipo `ui/` dejando en `backend/` solo reglas de juego.
-
----
-
-### `backend/app.py` (Flask)
-
-Contenedor mínimo de Flask. Actualmente:
-
-- Intenta importar desde `cropsystem.crops` rutas relativas típicas de ejecutar dentro de `backend/`.
-- No define aún rutas REST ni el símbolo `wheat`; conviene completar rutas (`/`) y ejecutar Flask con el PYTHONPATH correcto cuando quieras conectar cliente Flet ⇄ servidor.
+Flask mínimo: `GET /` devuelve JSON (`ok`, nombre del cultivo `wheat`). Pensado como base para exponer estado del juego más adelante.
 
 ---
 
@@ -173,8 +166,8 @@ Esto facilita repetir el patrón `TimedAction` en minería, horno y crafting sin
 
 - Temporización unificada y reutilizable: **hecha** (`TimedAction`).
 - Ciclo cultivos básico en código: **hecho** (`Crop` + ejemplo en UI).
-- Multiples parcelas, inventario persistente y despliegue web pulido: **pendiente**.
-- API Flask integrada al juego: **pendiente**.
+- Varias parcelas, inventario persistente y despliegue web pulido: **pendiente**.
+- API Flask amplia (guardado, rutas REST): **pendiente**.
 
 ---
 
